@@ -1,13 +1,28 @@
 #!/bin/bash
 
+
+#Check SMB Port
+Check_SMB_Port(){
+    nc -z -w3 "$1" 445 2>/dev/null
+    if [ $? -ne 0 ]; then
+        echo "[!] Error SMB Port 445 is closed On $1. Exiting ..."
+        exit 1
+    else
+        echo "[+] SMB Port is Open On $1 ..."
+    fi
+}
+#Usage Check
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0 <Target_IP> <USERNAME> <PASSWORD>"
     exit 1
 fi
-
+#Variables
 Target_IP=$1
 USERNAME=$2
 PASSWORD=$3
+
+echo "Checking If SMB Port 445 is Open On $Target_IP ..."
+Check_SMB_Port "$Target_IP"
 
 echo "Starting SMB Enumeration On $Target_IP..."
 echo "-------------------------------------------------"
