@@ -1,14 +1,27 @@
 #!/bin/bash
 
+#MJTRK01
+#SMB Enumeration Tool
 
+
+#Check The Target Connection
+Check_Connectivitly(){
+    ping -c 1 -W 3 "$1" >/dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo "[!] Error : Cannot Reach $1. Please Check The IP Address Or Network Connection."
+            exit 1
+        else
+            echo "[+] Successcefuly Reached $1"
+        fi
+}
 #Check SMB Port
 Check_SMB_Port(){
     nc -z -w3 "$1" 445 2>/dev/null
     if [ $? -ne 0 ]; then
-        echo "[!] Error SMB Port 445 is closed On $1. Exiting ..."
+        echo "[!] Error : SMB Port 445 is closed On $1. Exiting ..."
         exit 1
     else
-        echo "[+] SMB Port is Open On $1 ..."
+        echo "[+] SMB Port is Open On $1"
     fi
 }
 #Usage Check
@@ -21,7 +34,11 @@ Target_IP=$1
 USERNAME=$2
 PASSWORD=$3
 
-echo "Checking If SMB Port 445 is Open On $Target_IP ..."
+#Connection-Check
+echo "[*] Checking Connectivity To $Target_IP ... "
+Check_Connectivitly "$Target_IP"
+#SMB-Check
+echo "[*] Checking If SMB Port 445 is Open On $Target_IP ..."
 Check_SMB_Port "$Target_IP"
 
 echo "Starting SMB Enumeration On $Target_IP..."
