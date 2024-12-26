@@ -3,8 +3,22 @@
 #MJTRK01
 #SMB Enumeration Tool
 
+# Display Help Message
+if [[ "$1" == "-h" || "$1" == "-help" ]]; then
+    echo "Usage: ./SMBEnum.sh <Target_IP> <USERNAME> <PASSWORD>"
+    echo "Options:"
+    echo "-h, --help  Display This help Message"
+    exit 0
+fi
 
-#Check The Target Connection
+# Check The numbers Of Arguments
+if [ "$#" -ne 3 ]; then
+    echo "Error : Invalid number Of Arguments! "
+    echo "Usage: ./SMBEnum.sh <Target_IP> <USERNAME> <PASSWORD>"
+    exit 1
+fi
+
+# Check The Target Connection
 Check_Connectivitly(){
     ping -c 1 -W 3 "$1" >/dev/null 2>&1
         if [ $? -ne 0 ]; then
@@ -14,7 +28,7 @@ Check_Connectivitly(){
             echo "[+] Successcefuly Reached $1"
         fi
 }
-#Check SMB Port
+# Check SMB Port
 Check_SMB_Port(){
     nc -z -w3 "$1" 445 2>/dev/null
     if [ $? -ne 0 ]; then
@@ -24,20 +38,20 @@ Check_SMB_Port(){
         echo "[+] SMB Port is Open On $1"
     fi
 }
-#Usage Check
+# Usage Check
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0 <Target_IP> <USERNAME> <PASSWORD>"
     exit 1
 fi
-#Variables
+# Variables
 Target_IP=$1
 USERNAME=$2
 PASSWORD=$3
 
-#Connection-Check
+# Connection-Check
 echo "[*] Checking Connectivity To $Target_IP ... "
 Check_Connectivitly "$Target_IP"
-#SMB-Check
+# SMB-Check
 echo "[*] Checking If SMB Port 445 is Open On $Target_IP ..."
 Check_SMB_Port "$Target_IP"
 
